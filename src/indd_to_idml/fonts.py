@@ -8,6 +8,8 @@ def installed_postscript_names():
     roots = [Path.home() / ".local/share/fonts", Path("/usr/share/fonts")]
     if sys.platform == "darwin":
         roots = [Path.home() / "Library/Fonts", Path("/Library/Fonts"), Path("/System/Library/Fonts")]
+        # Font Book downloads live in versioned MobileAsset stores.
+        roots.extend(Path("/System/Library/AssetsV2").glob("com_apple_MobileAsset_Font[0-9]*"))
     elif sys.platform == "win32":
         import os
         roots = [Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"]

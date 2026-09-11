@@ -20,12 +20,13 @@ def installed_postscript_names():
                 continue
             try:
                 if file.suffix.lower() == ".ttc":
-                    fonts = TTCollection(file, lazy=True).fonts
+                    with TTCollection(file, lazy=True) as collection:
+                        # Faces share one stream; keep it open until all are read.
+                        for font in collection.fonts:
+                            names.update(n.toUnicode() for n in font["name"].names if n.nameID == 6)
                 else:
-                    fonts = [TTFont(file, lazy=True)]
-                for font in fonts:
-                    names.update(n.toUnicode() for n in font["name"].names if n.nameID == 6)
-                    font.close()
+                    with TTFont(file, lazy=True) as font:
+                        names.update(n.toUnicode() for n in font["name"].names if n.nameID == 6)
             except (OSError, ValueError, KeyError, TTLibError):
                 pass
     return names

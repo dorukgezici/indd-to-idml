@@ -158,3 +158,31 @@ def test_corrupt_psd_channels_fail_instead_of_returning_black(tmp_path, monkeypa
     monkeypatch.setattr('indd_to_idml.convert._convert_psd', decode)
     with pytest.raises(PSDDecompressionWarning):
         convert_psd(tmp_path / 'broken.psd', tmp_path / 'source.indd', tmp_path / 'out.idml', {})
+
+
+def test_all_faces_in_font_collection_are_detected(tmp_path, monkeypatch):
+    from fontTools.fontBuilder import FontBuilder
+    from fontTools.pens.ttGlyphPen import TTGlyphPen
+    from fontTools.ttLib import TTCollection
+    from indd_to_idml.fonts import installed_postscript_names
+
+    directory = tmp_path / 'Fonts'
+    directory.mkdir()
+    collection = TTCollection()
+    for style in ['Regular', 'Bold']:
+        builder = FontBuilder(1000, isTTF=True)
+        builder.setupGlyphOrder(['.notdef'])
+        builder.setupCharacterMap({})
+        builder.setupGlyf({'.notdef': TTGlyphPen(None).glyph()})
+        builder.setupHorizontalMetrics({'.notdef': (500, 0)})
+        builder.setupHorizontalHeader(ascent=800, descent=-200)
+        builder.setupNameTable({'familyName': 'Test Family', 'styleName': style,
+                                'psName': 'TestFamily-' + style,
+                                'fullName': 'Test Family ' + style})
+        builder.setupOS2()
+        builder.setupPost()
+        collection.fonts.append(builder.font)
+    collection.save(directory / 'test.ttc')
+    monkeypatch.setattr('indd_to_idml.fonts.sys.platform', 'win32')
+    monkeypatch.setenv('WINDIR', str(tmp_path))
+    assert {'TestFamily-Regular', 'TestFamily-Bold'} <= installed_postscript_names()

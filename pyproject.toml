@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "indd-to-idml"
+version = "0.1.0"
+description = "Convert InDesign files into editable IDML packages with fidelity reports"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = ["psd-tools>=1.19,<2", "Pillow>=12,<13", "numpy>=2,<3", "lxml>=6,<7", "fonttools>=4"]
+
+[project.urls]
+Repository = "https://github.com/dorukgezici/indd-to-idml"
+Issues = "https://github.com/dorukgezici/indd-to-idml/issues"
+
+[project.scripts]
+indd-to-idml = "indd_to_idml.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "fonttools>=4"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/indd_to_idml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

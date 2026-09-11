@@ -1,0 +1,27 @@
+{
+  "name": "indd-to-idml",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local INDD to editable IDML conversion CLI",
+  "scripts": {
+    "test": "uv run pytest",
+    "convert": "./indd-to-idml",
+    "setup:browser": "playwright install chromium"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dorukgezici/indd-to-idml.git"
+  },
+  "homepage": "https://github.com/dorukgezici/indd-to-idml#readme",
+  "bugs": {
+    "url": "https://github.com/dorukgezici/indd-to-idml/issues"
+  }
+}

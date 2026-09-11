@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+APP_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec uv run --project "$APP_DIR" python -m indd_to_idml.cli "$@"
